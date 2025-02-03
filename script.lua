@@ -204,6 +204,7 @@ local function farm()
 			playerPosition.Y >= fieldMin.Y and playerPosition.Y <= fieldMax.Y and
 			playerPosition.Z >= fieldMin.Z and playerPosition.Z <= fieldMax.Z then
 			tp = false
+			task.wait(.5)
             if tog.Sprinklers and not jj then
 		        makeSprinklers()
 		        jj = true
@@ -215,6 +216,7 @@ local function farm()
 			{CFrame = field.CFrame}
 		)
         tween:Play()
+			task.wait(.5)
         	if tog.Sprinklers and not jj then
 		        makeSprinklers()
 		        jj = true
