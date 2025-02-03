@@ -75,8 +75,8 @@ end
 function avoidMob()
     for i,v in next, game:GetService("Workspace").Monsters:GetChildren() do
         if v:FindFirstChild("Head") then
-            if tog.Mob and (v.Head.Position-player.Character.HumanoidRootPart.Position).magnitude < 30 and player.Character.Humanoid:GetState() ~= Enum.HumanoidStateType.Freefall then
-                player.Character.Humanoid.Jump = true
+            if tog.Mob and (v.Head.Position-player.Character.HumanoidRootPart.Position).magnitude < 30 and player.Character:WaitForChild("Humanoid"):GetState() ~= Enum.HumanoidStateType.Freefall then
+                player.Character:WaitForChild("Humanoid").Jump = true
             end
         end
     end
@@ -301,7 +301,7 @@ local function tokenCollection()
 						if isPointInRegion3(v.Position, region) then
 							if not visitedCoins[v] then
 								visitedCoins[v] = true 
-								player.Character.Humanoid:MoveTo(v.Position)
+								player.Character:WaitForChild("Humanoid"):MoveTo(v.Position)
 								player.Character:WaitForChild("Humanoid").MoveToFinished:Wait()
 							end
 						end
@@ -343,9 +343,9 @@ spawn(function()
 
 		if tog.Tokens then
 			if tog.TokenSpeedT then
-				player.Character.Humanoid.WalkSpeed = tog.TokenSpeed
+				player.Character:WaitForChild("Humanoid").WalkSpeed = tog.TokenSpeed
 			else
-				player.Character.Humanoid.WalkSpeed = baseWs
+				player.Character:WaitForChild("Humanoid").WalkSpeed = baseWs
 			end
 		end
 
