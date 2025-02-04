@@ -24,7 +24,7 @@ local tog = {
 	Convert = false,
 	Converting = false,
 	Sprinklers = false,
-    Mob = false,
+	Mob = false,
 }
 
 local Tab1 = Window:CreateTab("Farms")
@@ -73,13 +73,13 @@ function makeSprinklers()
 end
 
 function avoidMob()
-    for i,v in next, game:GetService("Workspace").Monsters:GetChildren() do
-        if v:FindFirstChild("Head") then
-            if tog.Mob and (v.Head.Position-player.Character.HumanoidRootPart.Position).magnitude < 30 and player.Character:WaitForChild("Humanoid"):GetState() ~= Enum.HumanoidStateType.Freefall then
-                player.Character:WaitForChild("Humanoid").Jump = true
-            end
-        end
-    end
+	for i,v in next, game:GetService("Workspace").Monsters:GetChildren() do
+		if v:FindFirstChild("Head") then
+			if tog.Mob and (v.Head.Position-player.Character.HumanoidRootPart.Position).magnitude < 30 and player.Character:WaitForChild("Humanoid"):GetState() ~= Enum.HumanoidStateType.Freefall then
+				player.Character:WaitForChild("Humanoid").Jump = true
+			end
+		end
+	end
 end
 
 local function getFlowerZoneNames()
@@ -125,9 +125,9 @@ ExampleToggle:CreateKeyBind()
 local ExampleToggle = e:CreateToggle("Auto Sprinkler", function(v)
 	tog.Sprinklers = v
 
-    if not v then
-        jj = false
-    end
+	if not v then
+		jj = false
+	end
 end)
 ExampleToggle:CreateKeyBind()
 
@@ -141,7 +141,7 @@ local e2 = Tab1:CreateGroupbox("Extra Farms", "Left")
 
 
 local ExampleToggle = e2:CreateToggle("Farm Snowflakes", function(v)
-	
+
 end)
 ExampleToggle:CreateKeyBind()
 
@@ -205,24 +205,17 @@ local function farm()
 			playerPosition.Z >= fieldMin.Z and playerPosition.Z <= fieldMax.Z then
 			tp = false
 			task.wait(.5)
-            if tog.Sprinklers and not jj then
-		        makeSprinklers()
-		        jj = true
-	        end
+			if tog.Sprinklers and not jj then
+				makeSprinklers()
+				jj = true
+			end
 		else
-        local tween = game:GetService("TweenService"):Create(
-			player.Character.HumanoidRootPart, 
-			TweenInfo.new(0, Enum.EasingStyle.Linear), 
-			{CFrame = field.CFrame}
-		)
-        tween:Play()
-			task.wait(.5)
-        	if tog.Sprinklers and not jj then
-		        makeSprinklers()
-		        jj = true
-	        end
-            jj = false
-            
+			local tween = game:GetService("TweenService"):Create(
+				player.Character.HumanoidRootPart, 
+				TweenInfo.new(0, Enum.EasingStyle.Linear), 
+				{CFrame = field.CFrame}
+			)
+			tween:Play()
 		end
 	end
 end
@@ -235,15 +228,16 @@ local function autosell()
 	local buttonText = player.PlayerGui.ScreenGui.ActivateButton.TextBox
 
 	if tog.Convert and pollen >= capacity then
+		tog.Converting = true
 		local TweenService = game:GetService("TweenService")
 		local target = CFrame.new(SpawnPos.Position + Vector3.new(0, 2, 9))
-        local tween = game:GetService("TweenService"):Create(
+		local tween = game:GetService("TweenService"):Create(
 			player.Character.HumanoidRootPart, 
 			TweenInfo.new(0, Enum.EasingStyle.Linear), 
 			{CFrame = target}
 		)
-        tween:Play()
-		task.wait(1)
+		tween:Play()
+		task.wait(.3)
 
 		if buttonText.Text ~= "Stop Making Honey" then
 			game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
@@ -337,32 +331,31 @@ spawn(function()
 	end)
 
 	coroutine.wrap(function()
-    while task.wait() do
-		dig()
-		farm()
-		autosell()
-        avoidMob()
+		while task.wait() do
+			dig()
+			farm()
+			autosell()
+			avoidMob()
 
-		if tog.Tokens then
-			if tog.TokenSpeedT then
-				player.Character:WaitForChild("Humanoid").WalkSpeed = tog.TokenSpeed
-			else
-				player.Character:WaitForChild("Humanoid").WalkSpeed = baseWs
+			if tog.Tokens then
+				if tog.TokenSpeedT then
+					player.Character:WaitForChild("Humanoid").WalkSpeed = tog.TokenSpeed
+				else
+					player.Character:WaitForChild("Humanoid").WalkSpeed = baseWs
+				end
 			end
-		end
 
-		local core = player.CoreStats
-		local capacity = core.Capacity.Value
-		local pollen = core.Pollen.Value
-		local SpawnPos = player.SpawnPos.Value
+			local core = player.CoreStats
+			local capacity = core.Capacity.Value
+			local pollen = core.Pollen.Value
+			local SpawnPos = player.SpawnPos.Value
 
-		if tog.Convert and pollen >= capacity then
-			tog.Converting = true
-		elseif pollen == 0 and tog.Convert then
-			tog.Converting = false
-			jj = false
+			if pollen == 0 and tog.Converting then
+				tog.Converting = false
+				jj = false
+			end
+
 		end
-        end
 	end)()
 
 	while task.wait() do
