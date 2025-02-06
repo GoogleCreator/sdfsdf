@@ -1,4 +1,5 @@
 local jj = false
+local tweening = false
 local hives = workspace.Honeycombs:GetChildren()
 
 for i = #hives, 1, -1 do
@@ -10,9 +11,11 @@ end
 
 print("All hives processed.")
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/IScriptCoolThings/Bracket-V2/main/onion.lua"))()
-
-local Window, MainGUI = Library:CreateWindow("Papaya Macros | v1.00")
+local floatpad = Instance.new("Part", game:GetService("Workspace"))
+floatpad.CanCollide = false
+floatpad.Anchored = true
+floatpad.Transparency = 1
+floatpad.Name = "daddy"
 
 local tog = {
 	Farm = false,
@@ -25,11 +28,9 @@ local tog = {
 	Converting = false,
 	Sprinklers = false,
 	Mob = false,
+    TweenSpeed = 7.5,
+    Float = false,
 }
-
-local Tab1 = Window:CreateTab("Farms")
-
-local e = Tab1:CreateGroupbox("Farming", "Left")
 
 --// Vars
 local tp = false
@@ -101,95 +102,7 @@ local function getFlowerZoneNames()
 end
 
 local fieldNames = getFlowerZoneNames()
---// socials
-local ExampleToggle = e:CreateToggle("Farm Field", function(v)
-	tog.Farm = v
-end)
-ExampleToggle:CreateKeyBind()
 
-local ExampleToggle = e:CreateToggle("Auto Dig", function(v)
-	tog.Dig = v
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleToggle = e:CreateToggle("Auto Collect Tokens", function(v)
-	tog.Tokens = v
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleToggle = e:CreateToggle("Auto Convert", function(v)
-	tog.Convert = v
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleToggle = e:CreateToggle("Auto Sprinkler", function(v)
-	tog.Sprinklers = v
-
-	if not v then
-		jj = false
-	end
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleToggle = e:CreateToggle("Avoid Mobs", function(v)
-	tog.Mob = v
-end)
-ExampleToggle:CreateKeyBind()
-
-
-local e2 = Tab1:CreateGroupbox("Extra Farms", "Left")
-
-
-local ExampleToggle = e2:CreateToggle("Farm Snowflakes", function(v)
-
-end)
-ExampleToggle:CreateKeyBind()
-
-
-local e3 = Tab1:CreateGroupbox("Field Boosters", "Left")
-
-
-local ExampleToggle = e3:CreateToggle("Auto Mountain Top Booster", function(v)
-	while v and task.wait() do
-		game.ReplicatedStorage.Events.ToyEvent:FireServer("Field Booster") 
-	end
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleToggle = e3:CreateToggle("Auto Red Field Booster", function(v)
-	while v and task.wait() do
-		game.ReplicatedStorage.Events.ToyEvent:FireServer("Red Field Booster") 
-	end
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleToggle = e3:CreateToggle("Auto Blue Field Booster", function(v)
-	while v and task.wait() do
-		game.ReplicatedStorage.Events.ToyEvent:FireServer("Blue Field Booster") 
-	end
-end)
-ExampleToggle:CreateKeyBind()
-
-
-local e4 = Tab1:CreateGroupbox("⚙️ Configuration", "Right")
-
-
-local ExampleDropdown = e4:CreateDropdown("Field To Farm", fieldNames, function(v)
-	tog.Field = v
-end)
-
-local ExampleToggle = e4:CreateToggle("Token Collection Speed", function(v)
-	tog.TokenSpeedT = v
-end)
-ExampleToggle:CreateKeyBind()
-
-local ExampleSlider2 = e4:CreateSlider("Token Collection Speed", 50, 70, 60, function(v)
-	tog.TokenSpeed = v
-end)
-
---// Misc
-
---Functions
 local function farm()
 	if tog.Farm and not tog.Converting then
 		local field = workspace.FlowerZones:FindFirstChild(tog.Field)
@@ -212,10 +125,18 @@ local function farm()
 		else
 			local tween = game:GetService("TweenService"):Create(
 				player.Character.HumanoidRootPart, 
-				TweenInfo.new(0, Enum.EasingStyle.Linear), 
-				{CFrame = field.CFrame}
+				TweenInfo.new(tog.TweenSpeed, Enum.EasingStyle.Linear),
+				{CFrame = field.CFrame + Vector3.new(0, 2, 0)}
 			)
-			tween:Play()
+
+            if not tweening then
+		        tween:Play()
+                tweening = true
+                tog.Float = true
+                tween.Completed:Wait()
+                tweening = false
+                tog.Float = false
+            end
 		end
 	end
 end
@@ -233,10 +154,19 @@ local function autosell()
 		local target = CFrame.new(SpawnPos.Position + Vector3.new(0, 2, 9))
 		local tween = game:GetService("TweenService"):Create(
 			player.Character.HumanoidRootPart, 
-			TweenInfo.new(0, Enum.EasingStyle.Linear), 
+			TweenInfo.new(tog.TweenSpeed, Enum.EasingStyle.Linear), 
 			{CFrame = target}
 		)
-		tween:Play()
+
+        if not tweening then
+		    tween:Play()
+            tweening = true
+            tog.Float = true
+            player.Character.Humanoid.BodyTypeScale.Value = 0
+            tween.Completed:Wait()
+            tweening = false
+            tog.Float = false
+        end
 		task.wait(.3)
 
 		if buttonText.Text ~= "Stop Making Honey" then
@@ -322,13 +252,147 @@ local function fetchStickers()
 	end
 end
 
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/Shaman.lua'))()
+
+local Window = Library:Window({
+    Text = "Zencros | BSS 🐝 | v1.00"
+})
+
+local Tab = Window:Tab({
+    Text = "Home"
+})
+
+local Tab2 = Window:Tab({
+    Text = "Farming"
+})
+
+local s1 = Tab2:Section({
+    Text = "Farming"
+})
+
+local dropdown = s1:Dropdown({
+    Text = "Field",
+    List = fieldNames,
+    Callback = function(v)
+        tog.Field = v
+    end
+})
+
+s1:Toggle({
+    Text = "Farm ⚙️",
+    Default = false,
+    Callback = function(v)
+        tog.Farm = v
+    end
+})
+
+s1:Toggle({
+    Text = "Auto Dig",
+    Default = false,
+    Callback = function(v)
+        tog.Dig = v
+    end
+})
+
+s1:Toggle({
+    Text = "Auto Convert",
+    Default = false,
+    Callback = function(v)
+        tog.Convert = v
+    end
+})
+
+s1:Toggle({
+    Text = "Auto Collect Tokens",
+    Default = false,
+    Callback = function(v)
+        tog.Tokens = v
+    end
+})
+
+s1:Toggle({
+    Text = "Auto Sprinkler",
+    Default = true,
+    Callback = function(v)
+        tog.Sprinklers = v
+
+	    if not v then
+		    jj = false
+	    end
+    end
+})
+
+s1:Toggle({
+    Text = "Avoid Mobs",
+    Default = false,
+    Callback = function(v)
+        tog.Mob = v
+    end
+})
+
+local s2 = Tab2:Section({
+    Text = "Dispensers",
+    Side = "Right"
+})
+
+local s3 = Tab2:Section({
+    Text = "Beesmas 🎁"
+})
+
+local s4 = Tab2:Section({
+    Text = "Settings ⚙️",
+    Side = "Right"
+})
+
+s4:Toggle({
+    Text = "Token Collection Speed",
+    Default = false,
+    Callback = function(v)
+        tog.TokenSpeedT = v
+    end
+})
+
+s4:Slider({
+    Text = "Tween Speed",
+    Default = 7.5,
+    Minimum = 5,
+    Maximum = 10,
+    Callback = function(v)
+        tog.TokenSpeed = v
+    end
+})
+
+local Tab3 = Window:Tab({
+    Text = "Combat"
+})
+
+local Tab5 = Window:Tab({
+    Text = "Zencros Premium ⭐"
+})
+
+
 --// initiate
 
 spawn(function()
+    tog.Float = false
 	--Afk
 	local vu = game:GetService("VirtualUser")
 	game:GetService("Players").LocalPlayer.Idled:connect(function() vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)task.wait(1)vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 	end)
+
+    game:GetService("RunService").Heartbeat:Connect(function()
+if tog.Float then
+    player.Character.Humanoid.BodyTypeScale.Value = 0 
+    floatpad.CanCollide = true 
+    floatpad.CFrame = CFrame.new(
+        player.Character.HumanoidRootPart.Position.X,
+        player.Character.HumanoidRootPart.Position.Y - 3.75,
+        player.Character.HumanoidRootPart.Position.Z
+    )
+else
+    floatpad.CanCollide = false
+end
+    end)
 
 	coroutine.wrap(function()
 		while task.wait() do
@@ -339,7 +403,7 @@ spawn(function()
 
 			if tog.Tokens then
 				if tog.TokenSpeedT then
-					player.Character:WaitForChild("Humanoid").WalkSpeed = tog.TokenSpeed
+					player.Character:WaitForChild("Humanoid").WalkSpeed = 70
 				else
 					player.Character:WaitForChild("Humanoid").WalkSpeed = baseWs
 				end
