@@ -1,5 +1,6 @@
 local jj = false
 local tweening = false
+local prem = false
 local hives = workspace.Honeycombs:GetChildren()
 
 for i = #hives, 1, -1 do
@@ -253,6 +254,8 @@ local function fetchStickers()
 end
 
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/Shaman.lua'))()
+local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
+local Notify = AkaliNotif.Notify;
 
 local Window = Library:Window({
     Text = "Zencros | BSS 🐝 | v1.00"
@@ -358,7 +361,7 @@ s4:Slider({
     Minimum = 5,
     Maximum = 10,
     Callback = function(v)
-        tog.TokenSpeed = v
+        tog.TweenSpeed = v
     end
 })
 
@@ -436,6 +439,22 @@ spawn(function()
 end)
 
 --//extra
+
+local function premiumIdentifier()
+    try = ""
+    if prem == false then
+    try = "❌"
+    else
+    try = "✅"
+    end
+    return try
+end
+
+Notify({
+Description = "Welcome, "..player.Name.."!";
+Title = "Premium: "..premiumIdentifier();
+Duration = 5;
+});
 
 local fieldDecos = workspace:FindFirstChild("FieldDecos")
 
