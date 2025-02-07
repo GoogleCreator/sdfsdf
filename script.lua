@@ -356,7 +356,7 @@ s4:Toggle({
 })
 
 s4:Slider({
-	Text = "Tween Speed",
+	Text = "Tween Time",
 	Default = 7.5,
 	Minimum = 5,
 	Maximum = 10,
