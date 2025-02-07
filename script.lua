@@ -29,8 +29,8 @@ local tog = {
 	Converting = false,
 	Sprinklers = false,
 	Mob = false,
-    TweenSpeed = 7.5,
-    Float = false,
+	TweenSpeed = 7.5,
+	Float = false,
 }
 
 --// Vars
@@ -130,14 +130,14 @@ local function farm()
 				{CFrame = field.CFrame + Vector3.new(0, 2, 0)}
 			)
 
-            if not tweening then
-		        tween:Play()
-                tweening = true
-                tog.Float = true
-                tween.Completed:Wait()
-                tweening = false
-                tog.Float = false
-            end
+			if not tweening then
+				tween:Play()
+				tweening = true
+				tog.Float = true
+				tween.Completed:Wait()
+				tweening = false
+				tog.Float = false
+			end
 		end
 	end
 end
@@ -159,15 +159,15 @@ local function autosell()
 			{CFrame = target}
 		)
 
-        if not tweening then
-		    tween:Play()
-            tweening = true
-            tog.Float = true
-            player.Character.Humanoid.BodyTypeScale.Value = 0
-            tween.Completed:Wait()
-            tweening = false
-            tog.Float = false
-        end
+		if not tweening then
+			tween:Play()
+			tweening = true
+			tog.Float = true
+			player.Character.Humanoid.BodyTypeScale.Value = 0
+			tween.Completed:Wait()
+			tweening = false
+			tog.Float = false
+		end
 		task.wait(.3)
 
 		if buttonText.Text ~= "Stop Making Honey" then
@@ -258,148 +258,148 @@ local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Ki
 local Notify = AkaliNotif.Notify;
 
 local Window = Library:Window({
-    Text = "Zencros | BSS 🐝 | v1.00"
+	Text = "Zencros | BSS 🐝 | v1.00"
 })
 
 local Tab = Window:Tab({
-    Text = "Home"
+	Text = "Home"
 })
 
 local Tab2 = Window:Tab({
-    Text = "Farming"
+	Text = "Farming"
 })
 
 local s1 = Tab2:Section({
-    Text = "Farming"
+	Text = "Farming"
 })
 
 local dropdown = s1:Dropdown({
-    Text = "Field",
-    List = fieldNames,
-    Callback = function(v)
-        tog.Field = v
-    end
+	Text = "Field",
+	List = fieldNames,
+	Callback = function(v)
+		tog.Field = v
+	end
 })
 
 s1:Toggle({
-    Text = "Farm ⚙️",
-    Default = false,
-    Callback = function(v)
-        tog.Farm = v
-    end
+	Text = "Farm ⚙️",
+	Default = false,
+	Callback = function(v)
+		tog.Farm = v
+	end
 })
 
 s1:Toggle({
-    Text = "Auto Dig",
-    Default = false,
-    Callback = function(v)
-        tog.Dig = v
-    end
+	Text = "Auto Dig",
+	Default = false,
+	Callback = function(v)
+		tog.Dig = v
+	end
 })
 
 s1:Toggle({
-    Text = "Auto Convert",
-    Default = false,
-    Callback = function(v)
-        tog.Convert = v
-    end
+	Text = "Auto Convert",
+	Default = false,
+	Callback = function(v)
+		tog.Convert = v
+	end
 })
 
 s1:Toggle({
-    Text = "Auto Collect Tokens",
-    Default = false,
-    Callback = function(v)
-        tog.Tokens = v
-    end
+	Text = "Auto Collect Tokens",
+	Default = false,
+	Callback = function(v)
+		tog.Tokens = v
+	end
 })
 
 s1:Toggle({
-    Text = "Auto Sprinkler",
-    Default = true,
-    Callback = function(v)
-        tog.Sprinklers = v
+	Text = "Auto Sprinkler",
+	Default = true,
+	Callback = function(v)
+		tog.Sprinklers = v
 
-	    if not v then
-		    jj = false
-	    end
-    end
+		if not v then
+			jj = false
+		end
+	end
 })
 
 s1:Toggle({
-    Text = "Avoid Mobs",
-    Default = false,
-    Callback = function(v)
-        tog.Mob = v
-    end
+	Text = "Avoid Mobs",
+	Default = false,
+	Callback = function(v)
+		tog.Mob = v
+	end
 })
 
 local s2 = Tab2:Section({
-    Text = "Dispensers",
-    Side = "Right"
+	Text = "Dispensers",
+	Side = "Right"
 })
 
 local s3 = Tab2:Section({
-    Text = "Beesmas 🎁"
+	Text = "Beesmas 🎁"
 })
 
 local s4 = Tab2:Section({
-    Text = "Settings ⚙️",
-    Side = "Right"
+	Text = "Settings ⚙️",
+	Side = "Right"
 })
 
 s4:Toggle({
-    Text = "Token Collection Speed",
-    Default = false,
-    Callback = function(v)
-        tog.TokenSpeedT = v
-    end
+	Text = "Token Collection Speed",
+	Default = false,
+	Callback = function(v)
+		tog.TokenSpeedT = v
+	end
 })
 
 s4:Slider({
-    Text = "Tween Speed",
-    Default = 7.5,
-    Minimum = 5,
-    Maximum = 10,
-    Callback = function(v)
-        tog.TweenSpeed = v
-    end
+	Text = "Tween Speed",
+	Default = 7.5,
+	Minimum = 5,
+	Maximum = 10,
+	Callback = function(v)
+		tog.TweenSpeed = v
+	end
 })
 
 local Tab3 = Window:Tab({
-    Text = "Combat"
+	Text = "Combat"
 })
 
 local Tab5 = Window:Tab({
-    Text = "Zencros Premium ⭐"
+	Text = "Zencros Premium ⭐"
 })
 
 
 --// initiate
 
 spawn(function()
-    tog.Float = false
+	tog.Float = false
 	--Afk
 	local vu = game:GetService("VirtualUser")
 	game:GetService("Players").LocalPlayer.Idled:connect(function() vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)task.wait(1)vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 	end)
 
-    game:GetService("RunService").Heartbeat:Connect(function()
-if tog.Float then
-    player.Character.Humanoid.BodyTypeScale.Value = 0 
-    floatpad.CanCollide = true 
-    floatpad.CFrame = CFrame.new(
-        player.Character.HumanoidRootPart.Position.X,
-        player.Character.HumanoidRootPart.Position.Y - 3.75,
-        player.Character.HumanoidRootPart.Position.Z
-    )
-else
-    floatpad.CanCollide = false
-end
-    end)
+	game:GetService("RunService").Heartbeat:Connect(function()
+		dig()
+		if tog.Float then
+			player.Character.Humanoid.BodyTypeScale.Value = 0 
+			floatpad.CanCollide = true 
+			floatpad.CFrame = CFrame.new(
+				player.Character.HumanoidRootPart.Position.X,
+				player.Character.HumanoidRootPart.Position.Y - 3.75,
+				player.Character.HumanoidRootPart.Position.Z
+			)
+		else
+			floatpad.CanCollide = false
+		end
+	end)
 
 	coroutine.wrap(function()
 		while task.wait() do
-			dig()
 			farm()
 			autosell()
 			avoidMob()
@@ -441,19 +441,19 @@ end)
 --//extra
 
 local function premiumIdentifier()
-    try = ""
-    if prem == false then
-    try = "❌"
-    else
-    try = "✅"
-    end
-    return try
+	try = ""
+	if prem == false then
+		try = "❌"
+	else
+		try = "✅"
+	end
+	return try
 end
 
 Notify({
-Description = "Welcome, "..player.Name.."!";
-Title = "Premium: "..premiumIdentifier();
-Duration = 5;
+	Description = "Welcome, "..player.Name.."!";
+	Title = "Premium: "..premiumIdentifier();
+	Duration = 15;
 });
 
 local fieldDecos = workspace:FindFirstChild("FieldDecos")
