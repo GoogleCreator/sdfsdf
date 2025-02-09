@@ -253,128 +253,264 @@ local function fetchStickers()
 	end
 end
 
-local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/Shaman.lua'))()
-local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
-local Notify = AkaliNotif.Notify;
+local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI/"))()
 
-local Window = Library:Window({
-	Text = "Zencros | BSS 🐝 | v1.00"
+WindUI:AddTheme({
+    Name = "Halloween",
+    
+    Accent = "#650e0e",
+    Outline = "#000000",
+    
+    Text = "#FFFFFF",
+    PlaceholderText = "#AAAAAA"
 })
 
-local Tab = Window:Tab({
-	Text = "Home"
+local Window = WindUI:CreateWindow({
+    Title = "Faygoware ~ Bee Swarm Simulator 🐝 ~ v1.00",
+    Icon = "circle-user-round",
+    Author = "by JustDivinity",
+    Size = UDim2.fromOffset(580, 200),
+    Transparent = true,
+    Theme = "Dark",
+    SideBarWidth = 170,
+    HasOutline = true,
 })
 
-local Tab2 = Window:Tab({
-	Text = "Farming"
+WindUI:SetTheme("Halloween")
+
+--// tabs
+local t1 = Window:Tab({
+    Title = "About",
+    Icon = "book-marked", -- lucide or rbxassetid
 })
 
-local s1 = Tab2:Section({
-	Text = "Farming"
+Window:SelectTab(1) -- Number of Tab
+
+local t2 = Window:Tab({
+    Title = "Farming",
+    Icon = "shovel", -- lucide or rbxassetid
 })
 
-local dropdown = s1:Dropdown({
-	Text = "Field",
-	List = fieldNames,
-	Callback = function(v)
-		tog.Field = v
-	end
+local t3 = Window:Tab({
+    Title = "Mobs",
+    Icon = "swords", -- lucide or rbxassetid
 })
 
-s1:Toggle({
-	Text = "Farm ⚙️",
-	Default = false,
-	Callback = function(v)
-		tog.Farm = v
-	end
+local t4 = Window:Tab({
+    Title = "Webhooks",
+    Icon = "webhook", -- lucide or rbxassetid
 })
 
-s1:Toggle({
-	Text = "Auto Dig",
-	Default = false,
-	Callback = function(v)
-		tog.Dig = v
-	end
+local t4 = Window:Tab({
+    Title = "Faygoware Premium",
+    Icon = "star", -- lucide or rbxassetid
 })
 
-s1:Toggle({
-	Text = "Auto Convert",
-	Default = false,
-	Callback = function(v)
-		tog.Convert = v
-	end
+--// about 
+
+local Button = t1:Button({
+    Title = "Copy Youtube Link",
+    Desc = "https://www.youtube.com/@Faygoware",
+    Callback = function()
+        setclipboard("https://www.youtube.com/@Faygoware?sub_confirmation=1")
+
+        local Notification = WindUI:Notify({
+            Title = "Copied Youtube Link",
+            Content = "Thanks~! ❤️",
+            Duration = 5,
+        })
+    end,
 })
 
-s1:Toggle({
-	Text = "Auto Collect Tokens",
-	Default = false,
-	Callback = function(v)
-		tog.Tokens = v
-	end
+local Button = t1:Button({
+    Title = "Copy Discord Link",
+    Desc = "https://discord.gg/sujUAgr4G2",
+    Callback = function()
+        setclipboard("https://discord.gg/sujUAgr4G2")
+
+        local Notification = WindUI:Notify({
+            Title = "Copied Discord Link",
+            Content = "Thanks~! ❤️",
+            Duration = 5,
+        })
+    end,
 })
 
-s1:Toggle({
-	Text = "Auto Sprinkler",
-	Default = true,
-	Callback = function(v)
-		tog.Sprinklers = v
+local monsterSpawnert = workspace.MonsterSpawners
 
-		if not v then
+local Paragraph = t1:Paragraph({
+    Title = "Monster Times",
+    Desc = "",
+})
+
+coroutine.wrap(function()
+    while task.wait(1) do
+        local timerText = ""
+        
+        local trackedMonsters = {
+            "TunnelBear",
+            "CoconutCrab",
+            "Commando Chick",
+            "StumpSnail",
+            "King Beetle Cave"
+        }
+
+        local monsterCount = 0
+        local totalMonsters = 0
+        
+        for _, monster in pairs(monsterSpawnert:GetChildren()) do
+            if table.find(trackedMonsters, monster.Name) then
+                totalMonsters = totalMonsters + 1
+            end
+        end
+
+        for _, monster in pairs(monsterSpawnert:GetChildren()) do
+            if table.find(trackedMonsters, monster.Name) then
+                local attachmentName = monster:FindFirstChild("TimerAttachment") and "TimerAttachment" or monster:FindFirstChild("Attachment") and "Attachment"
+                local timerLabel = attachmentName and monster[attachmentName]:FindFirstChild("TimerGui") and monster[attachmentName].TimerGui:FindFirstChild("TimerLabel")
+                local timerTextValue = "Ready!"
+                
+                if timerLabel and timerLabel.Text == "1:00" then
+                    timerTextValue = "Ready!"
+                elseif timerLabel and timerLabel.Text ~= "1:00" then
+                    timerTextValue = timerLabel.Text
+                end
+                
+                monsterCount = monsterCount + 1
+
+                timerText = timerText .. monster.MonsterType.Value .. ": " .. timerTextValue
+                
+                if monsterCount < totalMonsters then
+                    timerText = timerText .. "\n"
+                end
+            end
+        end
+        
+        Paragraph:SetDesc(timerText)
+    end
+end)()
+
+--// farming
+
+local Section = t2:Section({ 
+    Title = "Farming",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
+local Toggle = t2:Toggle({
+    Title = "Farm",
+    Desc = "Start farming.",
+    Value = false,
+    Callback = function(state)
+        tog.Farm = state
+    end,
+})
+
+local Toggle = t2:Toggle({
+    Title = "Auto Dig",
+    Desc = "Digs for you.",
+    Value = false,
+    Callback = function(state)
+        tog.Dig = state
+    end,
+})
+
+local Toggle = t2:Toggle({
+    Title = "Auto Convert",
+    Desc = "Converts bag when full.",
+    Value = false,
+    Callback = function(state)
+        tog.Convert = state
+    end,
+})
+
+local Toggle = t2:Toggle({
+    Title = "Auto Collect Tokens",
+    Desc = "Collects tokens for you.",
+    Value = false,
+    Callback = function(state)
+        tog.Tokens = state
+    end,
+})
+
+local Toggle = t2:Toggle({
+    Title = "Auto Sprinkler",
+    Desc = "Places sprinklers down if you have them.",
+    Value = false,
+    Callback = function(state)
+        tog.Sprinklers = state
+
+		if not state then
 			jj = false
 		end
-	end
+    end,
 })
 
-s1:Toggle({
-	Text = "Avoid Mobs",
-	Default = false,
-	Callback = function(v)
-		tog.Mob = v
-	end
+local Toggle = t2:Toggle({
+    Title = "Avoid Mobs",
+    Desc = "Avoids mobs in field.",
+    Value = false,
+    Callback = function(state)
+        tog.Mob = state
+    end,
 })
 
-local s2 = Tab2:Section({
-	Text = "Dispensers",
-	Side = "Right"
+local Section = t2:Section({ 
+    Title = "Settings",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
 })
 
-local s3 = Tab2:Section({
-	Text = "Beesmas 🎁"
+local Dropdown = t2:Dropdown({
+    Title = "Fields",
+    Desc = "Choose a Field",
+    Value = "Ant Field",
+    Multi = false,
+    AllowNone = false,
+    Values = fieldNames,
+    Callback = function(Tab)
+        tog.Field = Tab
+    end
 })
 
-local s4 = Tab2:Section({
-	Text = "Settings ⚙️",
-	Side = "Right"
+local Slider = t2:Slider({
+    Title = "Tween Speed",
+    Step = .1,
+    Value = {
+        Min = 5,
+        Max = 10,
+        Default = 7.5,
+    },
+    Callback = function(value)
+        tog.TweenSpeed = value
+    end
 })
 
-s4:Toggle({
-	Text = "Token Collection Speed",
-	Default = false,
-	Callback = function(v)
-		tog.TokenSpeedT = v
-	end
+local Toggle = t2:Toggle({
+    Title = "Token Speed",
+    Desc = "Toggle Token Speed",
+    Value = false,
+    Callback = function(state)
+        tog.TokenSpeedT = state
+    end,
 })
 
-s4:Slider({
-	Text = "Tween Time",
-	Default = 7.5,
-	Minimum = 5,
-	Maximum = 10,
-	Callback = function(v)
-		tog.TweenSpeed = v
-	end
-})
-
-local Tab3 = Window:Tab({
-	Text = "Combat"
-})
-
-local Tab5 = Window:Tab({
-	Text = "Zencros Premium ⭐"
+local Slider = t2:Slider({
+    Title = "Token Collection Speed",
+    Step = .1,
+    Value = {
+        Min = 40,
+        Max = 70,
+        Default = 55,
+    },
+    Callback = function(value)
+        tog.TokenSpeed = value
+    end
 })
 
 
---// initiate
+
 
 spawn(function()
 	tog.Float = false
@@ -406,7 +542,7 @@ spawn(function()
 
 			if tog.Tokens then
 				if tog.TokenSpeedT then
-					player.Character:WaitForChild("Humanoid").WalkSpeed = 70
+					player.Character:WaitForChild("Humanoid").WalkSpeed = tog.TokenSpeed
 				else
 					player.Character:WaitForChild("Humanoid").WalkSpeed = baseWs
 				end
@@ -450,12 +586,6 @@ local function premiumIdentifier()
 	return try
 end
 
-Notify({
-	Description = "Welcome, "..player.Name.."!";
-	Title = "Premium: "..premiumIdentifier();
-	Duration = 15;
-});
-
 local fieldDecos = workspace:FindFirstChild("FieldDecos")
 
 if fieldDecos then
@@ -490,3 +620,9 @@ if miscDecorations then
 		end
 	end
 end
+
+local Notification = WindUI:Notify({
+    Title = "Loaded! Welcome, "..game.Players.LocalPlayer.Name,
+    Content = "Premium: "..premiumIdentifier(),
+    Duration = 10,
+})
