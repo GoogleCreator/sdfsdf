@@ -31,6 +31,10 @@ local tog = {
 	Mob = false,
 	TweenSpeed = 7.5,
 	Float = false,
+    Vicious = false,
+    DetectedVicious = false,
+    ViciousStarted = false,
+    Check = false,
 }
 
 --// Vars
@@ -249,7 +253,7 @@ local function fetchStickers()
 	for i,v in next, workspace.HiddenStickers:GetChildren() do
 		v.CanCollide = false
 		v.Transparency = 0
-		v.CFrame = CFrame.new(game:GetService("Players").LocalPlayer.Character.Head.Position)
+		v.CFrame = CFrame.new(player.Character.Head.Position)
 	end
 end
 
@@ -392,7 +396,12 @@ coroutine.wrap(function()
                 end
 
                 monsterCount = monsterCount + 1
-                timerText = timerText .. monster.MonsterType.Value .. ": " .. timerTextValue
+                
+                if timerLabel and timerLabel.Visible == false then
+                    timerText = timerText .. monster.MonsterType.Value .. ": " .. timerTextValue
+                elseif timerLabel and timerLabel.Visible == true then
+                    timerText = timerText .. timerTextValue
+                end
                 
                 if monsterCount < totalMonsters then
                     timerText = timerText .. "\n"
@@ -418,6 +427,7 @@ local Toggle = t2:Toggle({
     Value = false,
     Callback = function(state)
         tog.Farm = state
+        tog.Check = state
     end,
 })
 
@@ -523,8 +533,19 @@ local Slider = t2:Slider({
     end
 })
 
+--// mobs
 
+local Section = t3:Section({ 
+    Title = "Mobs",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
 
+local Section = t3:Section({ 
+    Title = "Settings",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
 
 spawn(function()
 	tog.Float = false
