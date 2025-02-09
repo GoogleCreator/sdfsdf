@@ -344,6 +344,8 @@ local Paragraph = t1:Paragraph({
 })
 
 coroutine.wrap(function()
+    local notifiedMonsters = {}
+
     while task.wait(1) do
         local timerText = ""
         
@@ -369,15 +371,27 @@ coroutine.wrap(function()
                 local attachmentName = monster:FindFirstChild("TimerAttachment") and "TimerAttachment" or monster:FindFirstChild("Attachment") and "Attachment"
                 local timerLabel = attachmentName and monster[attachmentName]:FindFirstChild("TimerGui") and monster[attachmentName].TimerGui:FindFirstChild("TimerLabel")
                 local timerTextValue = "Ready!"
-                
-                if timerLabel and timerLabel.Text == "1:00" then
-                    timerTextValue = "Ready!"
-                elseif timerLabel and timerLabel.Text ~= "1:00" then
-                    timerTextValue = timerLabel.Text
-                end
-                
-                monsterCount = monsterCount + 1
 
+                if timerLabel then
+                    local timerText = timerLabel.Text
+                    if timerLabel.Visible == false then
+                        timerTextValue = "Ready!"
+
+                        if not notifiedMonsters[monster.Name] then
+                            local Notification = WindUI:Notify({
+                                Title = "Mob Alert!",
+                                Content = monster.MonsterType.Value.." is ready to kill!",
+                                Duration = 10,
+                            })
+                            notifiedMonsters[monster.Name] = true
+                        end
+                    elseif timerLabel.Visible == true then
+                        timerTextValue = timerText
+                        notifiedMonsters[monster.Name] = false
+                    end
+                end
+
+                monsterCount = monsterCount + 1
                 timerText = timerText .. monster.MonsterType.Value .. ": " .. timerTextValue
                 
                 if monsterCount < totalMonsters then
