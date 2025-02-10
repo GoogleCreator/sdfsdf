@@ -91,14 +91,10 @@ end
 local function getFlowerZoneNames()
 	local names = {}
 	for _, v in ipairs(Fields) do
-		if v.Name == "Blue Brick Field" or v.Name == "Red Brick Field" or v.Name == "Mixed Brick Field" or v.Name == "White Brick Field" then
-			warn("Blacklisted dumbass brick fields! :)")
-		else
-			table.insert(names, v.Name)
-			v.Size += Vector3.new(0, 70, 0)
-			v.Color = Color3.fromRGB(255,0,0)
-			v.CastShadow = false
-		end
+		table.insert(names, v.Name)
+		v.Size += Vector3.new(0, 70, 0)
+		v.Color = Color3.fromRGB(255,0,0)
+		v.CastShadow = false
 	end
 
 	table.sort(names)
@@ -128,17 +124,11 @@ local function farm()
 				jj = true
 			end
 		else
-			local tween = game:GetService("TweenService"):Create(
-				player.Character.HumanoidRootPart, 
-				TweenInfo.new(tog.TweenSpeed, Enum.EasingStyle.Linear),
-				{CFrame = field.CFrame + Vector3.new(0, 2, 0)}
-			)
-
 			if not tweening then
-				tween:Play()
+				game:GetService("TweenService"):Create(player.Character.HumanoidRootPart, TweenInfo.new(tog.TweenSpeed, Enum.EasingStyle.Linear), {CFrame = field.CFrame + Vector3.new(0, 2, 0)}):Play()
 				tweening = true
 				tog.Float = true
-				tween.Completed:Wait()
+				task.wait(tog.TweenSpeed)
 				tweening = false
 				tog.Float = false
 			end
@@ -157,18 +147,12 @@ local function autosell()
 		tog.Converting = true
 		local TweenService = game:GetService("TweenService")
 		local target = CFrame.new(SpawnPos.Position + Vector3.new(0, 2, 9))
-		local tween = game:GetService("TweenService"):Create(
-			player.Character.HumanoidRootPart, 
-			TweenInfo.new(tog.TweenSpeed, Enum.EasingStyle.Linear), 
-			{CFrame = target}
-		)
 
-		if not tweening then
-			tween:Play()
+		if not tweening and pollen ~= 0 then
+			game:GetService("TweenService"):Create(player.Character.HumanoidRootPart, TweenInfo.new(tog.TweenSpeed, Enum.EasingStyle.Linear), {CFrame = target}):Play()
 			tweening = true
 			tog.Float = true
-			player.Character.Humanoid.BodyTypeScale.Value = 0
-			tween.Completed:Wait()
+			task.wait(tog.TweenSpeed)
 			tweening = false
 			tog.Float = false
 		end
@@ -481,6 +465,12 @@ local Toggle = t2:Toggle({
 })
 
 local Section = t2:Section({ 
+    Title = "Dispensers",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
+local Section = t2:Section({ 
     Title = "Settings",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
@@ -589,10 +579,10 @@ spawn(function()
 			local SpawnPos = player.SpawnPos.Value
 
 			if pollen == 0 and tog.Converting then
+                task.wait(7)
 				tog.Converting = false
 				jj = false
 			end
-
 		end
 	end)()
 
